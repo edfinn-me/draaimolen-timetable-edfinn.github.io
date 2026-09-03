@@ -665,6 +665,94 @@
   }
   .act[data-clash="true"] .warn{ display: inline-flex; }
 
+  /* ---------- mobile agenda: stage filter + stacked list ---------- */
+  .day-list{ display: none; }
+
+  .stage-filter{
+    display: flex;
+    gap: .45rem;
+    overflow-x: auto;
+    padding: .15rem .1rem 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .stage-filter::-webkit-scrollbar{ display: none; }
+  .stage-filter button{
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    appearance: none;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: .78rem;
+    padding: .5rem .9rem;
+    border-radius: 999px;
+    min-height: 2.5rem;
+    white-space: nowrap;
+  }
+  .stage-filter button .dot{ width: .5rem; height: .5rem; border-radius: 50%; background: var(--sc, currentColor); flex-shrink: 0; }
+  .stage-filter button[aria-pressed="true"]{ background: var(--text); color: var(--bg); border-color: var(--text); }
+  .stage-filter button:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .list-items{ display: flex; flex-direction: column; gap: .6rem; }
+  .list-item{
+    appearance: none;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    width: 100%;
+    min-height: 64px;
+    padding: .75rem .95rem;
+    border-radius: .9rem;
+    border: 1.5px solid color-mix(in srgb, var(--sc) 45%, var(--border));
+    background: color-mix(in srgb, var(--sc) 10%, var(--surface));
+    color: var(--text);
+    font-family: 'Archivo', sans-serif;
+  }
+  .list-item .li-time{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .76rem;
+    line-height: 1.3;
+    color: var(--text-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: 3.2rem;
+  }
+  .list-item .li-main{ flex: 1; min-width: 0; }
+  .list-item .li-name{ font-weight: 700; font-size: .92rem; line-height: 1.28; }
+  .list-item .li-stage{ display: flex; align-items: center; gap: .35rem; margin-top: .28rem; font-size: .74rem; color: var(--text-dim); }
+  .list-item .li-stage .dot{ width: .5rem; height: .5rem; border-radius: 50%; background: var(--sc); flex-shrink: 0; }
+  .list-item .li-note{
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    margin-top: .4rem;
+    background: var(--note-soft);
+    color: var(--note-ink);
+    font-size: .62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    padding: .14rem .45rem;
+    border-radius: 999px;
+    width: fit-content;
+  }
+  .list-item .li-star{ width: 1.4rem; height: 1.4rem; flex-shrink: 0; color: var(--text-faint); }
+  .list-item .li-star svg{ display: block; width: 100%; height: 100%; }
+  .list-item[data-saved="true"]{ background: color-mix(in srgb, var(--sc) 26%, var(--surface)); border-color: var(--sc); }
+  .list-item[data-saved="true"] .li-star{ color: var(--sc); }
+  .list-item[data-clash="true"]{ border-color: var(--note); border-style: dashed; }
+  .list-item:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .list-empty{ padding: 2.2rem 1rem; text-align: center; color: var(--text-faint); font-size: .88rem; }
+
   footer.foot{
     margin-top: 2.5rem;
     padding-top: 1.5rem;
@@ -679,12 +767,47 @@
   }
   footer.foot a{ color: inherit; }
 
-  @media (max-width: 640px){
-    .wrap{ padding: 1.4rem 1rem 3rem; }
-    header.top{ flex-direction: column; align-items: stretch; }
-    .day-switch{ align-self: flex-start; }
-    .schedule-bar{ flex-wrap: wrap; top: .5rem; }
-    .schedule-bar .hint{ order: 5; width: 100%; }
+  @media (max-width: 700px){
+    .wrap{ padding: 1.1rem .85rem 3rem; }
+
+    header.top{ flex-direction: column; align-items: stretch; gap: 1.1rem; }
+    h1.title{ font-size: clamp(1.6rem, 8vw, 2.1rem); }
+    .subtitle{ font-size: .9rem; }
+    .day-switch{ align-self: stretch; }
+    .day-switch button{ flex: 1; min-height: 2.9rem; }
+
+    .legend{ gap: .4rem .7rem; margin-bottom: 1.1rem; }
+    .legend-item{ font-size: .68rem; }
+
+    /* schedule bar becomes a compact stacked card */
+    .schedule-bar{
+      flex-wrap: wrap;
+      top: .5rem;
+      padding: .8rem .9rem;
+      gap: .6rem .9rem;
+    }
+    .schedule-bar .stat{ order: 1; }
+    .schedule-bar .stat.clash{ order: 2; }
+    .schedule-bar .sep{ display: none; }
+    .schedule-bar .hint{ order: 3; width: 100%; font-size: .82rem; }
+    .schedule-bar button.toggle-drawer{
+      order: 4;
+      width: 100%;
+      justify-content: center;
+      min-height: 2.9rem;
+    }
+
+    .drawer[data-open="true"]{ max-height: 34rem; }
+    .drawer-tabs button{ min-height: 2.75rem; }
+    .agenda-block{ padding: .35rem .5rem; }
+    .agenda-block .name{ font-size: .74rem; }
+    .agenda-block button.remove{ width: 1.6rem; height: 1.6rem; }
+
+    /* swap the horizontally-scrolling grid for a tap-friendly stacked list */
+    .tt-shell{ display: none; }
+    .day-list{ display: block; }
+
+    footer.foot{ flex-direction: column; gap: .4rem; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -906,6 +1029,9 @@
   var panelsEl = document.getElementById('panels');
   var trackEls = {}; // day -> [stageIdx] -> track element
   var actEls = {};   // id -> element(s)
+  var listContainerEls = {}; // day -> mobile list container element
+  var listFilter = { 0: 'all', 1: 'all' };
+  var currentClashes = { 0: new Set(), 1: new Set() };
 
   DAYS.forEach(function(dayName, dayIdx){
     var panel = document.createElement('div');
@@ -955,6 +1081,50 @@
     scroll.appendChild(grid);
     shell.appendChild(scroll);
     panel.appendChild(shell);
+
+    // ---- mobile: stage filter + stacked, tap-friendly list ----
+    var dayList = document.createElement('div');
+    dayList.className = 'day-list';
+
+    var filterBar = document.createElement('div');
+    filterBar.className = 'stage-filter';
+    filterBar.setAttribute('role', 'tablist');
+    filterBar.setAttribute('aria-label', dayName + ' stage filter');
+
+    var allBtn = document.createElement('button');
+    allBtn.type = 'button';
+    allBtn.dataset.stage = 'all';
+    allBtn.setAttribute('aria-pressed', 'true');
+    allBtn.textContent = 'All stages';
+    filterBar.appendChild(allBtn);
+
+    STAGES.forEach(function(stage){
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.dataset.stage = stage.key;
+      chip.setAttribute('aria-pressed', 'false');
+      chip.style.setProperty('--sc', 'var(--stage-' + stage.key + ')');
+      chip.innerHTML = '<span class="dot"></span>' + stage.name;
+      filterBar.appendChild(chip);
+    });
+
+    filterBar.addEventListener('click', function(e){
+      var btn = e.target.closest('button[data-stage]');
+      if (!btn) return;
+      listFilter[dayIdx] = btn.dataset.stage;
+      Array.prototype.slice.call(filterBar.querySelectorAll('button')).forEach(function(b){
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      renderList(dayIdx);
+    });
+    dayList.appendChild(filterBar);
+
+    var listItems = document.createElement('div');
+    listItems.className = 'list-items';
+    dayList.appendChild(listItems);
+    listContainerEls[dayIdx] = listItems;
+
+    panel.appendChild(dayList);
     panelsEl.appendChild(panel);
   });
 
@@ -1017,6 +1187,45 @@
     drawerToggle.setAttribute('aria-expanded', String(drawerOpen));
   });
 
+  // Mobile stacked list for one day, filtered to the selected stage (or
+  // all of them), sorted chronologically — the phone-friendly counterpart
+  // to the desktop grid, built from the same data.
+  function renderList(dayIdx){
+    var filter = listFilter[dayIdx];
+    var clashSet = currentClashes[dayIdx];
+    var items = ACTS.filter(function(a){
+      return a[0] === dayIdx && (filter === 'all' || STAGES[a[1]].key === filter);
+    }).sort(function(a, b){ return a[3] - b[3]; });
+
+    var container = listContainerEls[dayIdx];
+    if (items.length === 0){
+      container.innerHTML = '<div class="list-empty">Nothing on this stage today.</div>';
+      return;
+    }
+
+    container.innerHTML = items.map(function(a){
+      var id = actId(a);
+      var stage = STAGES[a[1]];
+      var isSaved = saved.has(id);
+      var isClash = clashSet.has(id);
+      var label = (a[2] + ', ' + stage.name + ', ' + DAYS[dayIdx] + ' ' + fmt(a[3]) + '–' + fmt(a[4])).replace(/"/g, '&quot;');
+      return '<button type="button" class="list-item" data-id="' + id + '" data-saved="' + isSaved + '" data-clash="' + isClash + '" ' +
+          'style="--sc:var(--stage-' + stage.key + ')" aria-pressed="' + isSaved + '" aria-label="' + label + '">' +
+        '<span class="li-time">' + fmt(a[3]) + '<br>' + fmt(a[4]) + '</span>' +
+        '<span class="li-main">' +
+          '<span class="li-name">' + a[2] + '</span>' +
+          '<span class="li-stage"><span class="dot"></span>' + stage.name + '</span>' +
+          (isClash ? '<span class="li-note">' + OVERLAP_ICON + ' Same time</span>' : '') +
+        '</span>' +
+        '<span class="li-star">' + (isSaved ? STAR_FILLED : STAR) + '</span>' +
+      '</button>';
+    }).join('');
+
+    Array.prototype.slice.call(container.querySelectorAll('.list-item')).forEach(function(btn){
+      btn.addEventListener('click', function(){ toggleSave(btn.dataset.id); });
+    });
+  }
+
   function renderAll(){
     var allClashes = {};
     var totalClash = 0;
@@ -1025,6 +1234,7 @@
       allClashes[di] = c;
       totalClash += c.size;
     });
+    currentClashes = allClashes;
 
     ACTS.forEach(function(a){
       var id = actId(a);
@@ -1048,6 +1258,8 @@
     } else {
       scheduleHint.textContent = "You're set — nothing on your list overlaps.";
     }
+
+    DAYS.forEach(function(dn, di){ renderList(di); });
 
     renderDrawer(allClashes);
   }
